@@ -130,4 +130,11 @@ public interface SysUserMapper
      * @return 结果
      */
     public SysUser checkEmailUnique(String email);
+
+    /**
+     * 查询所有用户信息
+     * @return
+     */
+    public List<SysUser> selectAllUserInfo();
+
 }

@@ -8,8 +8,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
+//@SpringBootApplication(scanBasePackages = {"com.linzhi.datasource.app"})
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class},scanBasePackages = "com.linzhi.datasource.app")
-//@MapperScan("com.linzhi.datasource.app.dao") 在yml文件新增增加mapper.identity=MYSQL 就不报错误了
+//@MapperScan("com.linzhi.datasource.app.dao") 如果不加MapperScan，在yml文件新增增加mapper.identity=MYSQL 就不报错误了
 public class App extends SpringBootServletInitializer {
 
     @Override

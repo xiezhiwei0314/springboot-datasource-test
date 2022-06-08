@@ -140,7 +140,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
 		select user_id, email from sys_user where email = #{email} limit 1
 	</select>
-	
+	<select id="selectAllUserInfo" resultType="com.linzhi.datasource.app.domain.entity.SysUser">
+		select * from sys_user
+	</select>
+
 	<insert id="insertUser" parameterType="com.linzhi.datasource.app.domain.entity.SysUser" useGeneratedKeys="true" keyProperty="userId">
  		insert into sys_user(
  			<if test="userId != null and userId != 0">user_id,</if>
