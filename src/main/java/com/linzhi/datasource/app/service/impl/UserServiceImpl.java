@@ -20,4 +20,11 @@ public class UserServiceImpl implements IUserService {
         List<SysUser> sysUsers = sysUserMapper.selectAllUserInfo();
         return sysUsers;
     }
+
+    @Override
+    public SysUser selectUserById(Long id) {
+
+        SysUser sysUser = sysUserMapper.selectUserById(id);
+        return sysUser;
+    }
 }

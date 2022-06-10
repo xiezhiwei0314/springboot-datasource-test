@@ -1,5 +1,6 @@
 package com.linzhi.datasource.app.dao;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.linzhi.datasource.app.domain.entity.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -55,6 +56,7 @@ public interface SysUserMapper
      * @param userId 用户ID
      * @return 用户对象信息
      */
+    @DS(value = "slave")
     public SysUser selectUserById(Long userId);
 
     /**
@@ -135,6 +137,7 @@ public interface SysUserMapper
      * 查询所有用户信息
      * @return
      */
+    @DS(value = "slave")
     public List<SysUser> selectAllUserInfo();
 
 }

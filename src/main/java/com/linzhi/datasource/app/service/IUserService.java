@@ -8,4 +8,6 @@ import java.util.List;
 public interface IUserService {
 
     public List<SysUser> selectAllUserInfo();
+
+    public SysUser selectUserById(Long id);
 }

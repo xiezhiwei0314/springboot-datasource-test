@@ -83,13 +83,13 @@ spring:
         max-wait: -1ms
 
 # token配置
-#token:
+token:
   # 令牌自定义标识
- # header: Authorization
+  header: Authorization
   # 令牌密钥
- # secret: abcdefghijklmnopqrstuvwxyz
+  secret: abcdefghijklmnopqrstuvwxyz
   # 令牌有效期（默认30分钟）
- # expireTime: 30
+  expireTime: 30
 
 # MyBatis配置
 mybatis:
@@ -118,17 +118,17 @@ pagehelper:
   params: count=countSql
 
 # Swagger配置
-#swagger:
+swagger:
   # 是否开启swagger
- # enabled: true
+  enabled: true
   # 请求前缀
- # pathMapping: /dev-api
+  pathMapping: /dev-api
 
 # 防止XSS攻击
-#xss:
+xss:
   # 过滤开关
-  #enabled: true
+  enabled: true
   # 排除链接（多个用逗号分隔）
-  #excludes: /system/notice
+  excludes: /system/notice
   # 匹配链接
-  #urlPatterns: /system/*,/monitor/*,/tool/*
+  urlPatterns: /system/*,/monitor/*,/tool/*
