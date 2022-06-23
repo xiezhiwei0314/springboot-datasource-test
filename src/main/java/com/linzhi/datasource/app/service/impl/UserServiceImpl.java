@@ -1,7 +1,9 @@
 package com.linzhi.datasource.app.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.linzhi.datasource.app.dao.SysUserMapper;
 import com.linzhi.datasource.app.domain.entity.SysUser;
+import com.linzhi.datasource.app.enums.DataSourceType;
 import com.linzhi.datasource.app.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class UserServiceImpl implements IUserService {
         List<SysUser> sysUsers = sysUserMapper.selectAllUserInfo();
         return sysUsers;
     }
+
 
     @Override
     public SysUser selectUserById(Long id) {

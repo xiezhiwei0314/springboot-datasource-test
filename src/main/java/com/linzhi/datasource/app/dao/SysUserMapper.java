@@ -1,7 +1,9 @@
 package com.linzhi.datasource.app.dao;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.linzhi.datasource.app.annotation.DataSource;
 import com.linzhi.datasource.app.domain.entity.SysUser;
+import com.linzhi.datasource.app.enums.DataSourceType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -56,7 +58,8 @@ public interface SysUserMapper
      * @param userId 用户ID
      * @return 用户对象信息
      */
-    @DS(value = "slave")
+    //@DS(value = "SLAVE") 不生效，问题没有找到
+    @DataSource(DataSourceType.SLAVE)
     public SysUser selectUserById(Long userId);
 
     /**

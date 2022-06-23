@@ -37,6 +37,13 @@ public class DruidConfig
         return druidProperties.dataSource(dataSource);
     }
 
+    /**
+     * 启动从库，在application-druid.yml 要设置为 enabled: true
+     * 否则使用@DataSource(DataSourceType.SLAVE)不生效，
+     * 而且下面方法获取不到从库的配置信息
+     * @param druidProperties
+     * @return
+     */
     @Bean
     @ConfigurationProperties("spring.datasource.druid.slave")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave", name = "enabled", havingValue = "true")
@@ -72,13 +79,14 @@ public class DruidConfig
         }
         catch (Exception e)
         {
+            e.printStackTrace();
         }
     }
 
     /**
      * 去除监控页面底部的广告
      */
-   /* @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Bean
     @ConditionalOnProperty(name = "spring.datasource.druid.statViewServlet.enabled", havingValue = "true")
     public FilterRegistrationBean removeDruidFilterRegistrationBean(DruidStatProperties properties)
@@ -119,5 +127,5 @@ public class DruidConfig
         registrationBean.setFilter(filter);
         registrationBean.addUrlPatterns(commonJsPattern);
         return registrationBean;
-    }*/
+    }
 }

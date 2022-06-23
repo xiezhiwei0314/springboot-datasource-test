@@ -52,6 +52,25 @@ public class SysUserController {
         return null;
     }
 
+
+    //@PostMapping(value = "/selectUserInfo")
+    @RequestMapping(value="selectByIdUserInfo",method = RequestMethod.GET)
+    //@ApiOperation("查询所有用户信息")
+    public Response<BasePageInfo<SysUser>> selectByIdUserInfo(HttpServletRequest req, HttpServletResponse resp) {
+        log.info("查询用信息");
+        try {
+            SysUserRequest request = new SysUserRequest();
+            PageHelper.startPage(request.getPage(), request.getPageSize());
+            SysUser sysUserInfos = userService.selectUserById(1L);
+            log.info("查询所有用户信息响应：{}", sysUserInfos);
+            return new Response(sysUserInfos);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("查询所有用户信息失败:{}",e.getMessage());
+        }
+        return null;
+    }
+
     @RequestMapping(value="test",method = RequestMethod.GET)
     public String test(){
 

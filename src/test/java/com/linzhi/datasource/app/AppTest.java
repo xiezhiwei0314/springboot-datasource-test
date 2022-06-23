@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.linzhi.datasource.app.dao.SysUserMapper;
 import com.linzhi.datasource.app.domain.entity.SysUser;
+import com.linzhi.datasource.app.enums.DataSourceType;
 import com.linzhi.datasource.app.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -29,7 +30,9 @@ public class AppTest
 
     @Test
     public void findUserByIdTest(){
-        SysUser sysUser = sysUserMapper.selectUserById(1l);
+        System.out.println(DataSourceType.SLAVE);
+       // SysUser sysUser = sysUserMapper.selectUserById(1l);
+        SysUser sysUser = userService.selectUserById(1L);
         System.out.println(sysUser.getUserId()+" " +sysUser.getUserName()+"  "+sysUser.getNickName());
     }
 
