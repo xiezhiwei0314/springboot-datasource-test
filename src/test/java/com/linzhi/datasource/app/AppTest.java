@@ -48,4 +48,15 @@ public class AppTest
     }
 
 
+    public static void main(String[] args) {
+
+        String node="风控部门负责人审批";
+        if(node.contains("部门负责人")){
+            System.out.println(11);
+        }else{
+            System.out.println(22);
+        }
+    }
+
+
 }

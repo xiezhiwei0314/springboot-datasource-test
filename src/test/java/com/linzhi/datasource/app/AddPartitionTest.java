@@ -3,15 +3,14 @@ package com.linzhi.datasource.app;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
+import com.alibaba.fastjson.JSON;
+import com.linzhi.datasource.app.utils.EncryptorSecuriyUtil;
 
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,7 +55,23 @@ public class AddPartitionTest {
         //路由表新增网联路由
         //routerConfigInsert();
 
-        cyjjDataProcess();
+        //产业基金集团内数据脚本
+        //cyjjDataProcess();
+
+        //产业基金OA用户ID
+        //cyjjOAUserId();
+
+        //投后项目管理人员数据解析
+
+       //cyjjAfterUserInfo();
+
+       cyjjUserInfoEncryytor();
+
+   /*     String s="f-0808879f090f";
+
+       System.out.println( "---"+s.startsWith("f"));
+        System.out.println(s.substring(1,s.length()));*/
+
 
     }
 
@@ -537,5 +552,155 @@ public class AddPartitionTest {
             System.out.println(sb);
 
         }
+    }
+
+    public static void cyjjOAUserId() {
+
+        ExcelReader excelEpccReader = ExcelUtil.getReader(ResourceUtil.getStream("F:\\OA_USER_ID.xls"));
+
+        List<Map<String, Object>> listEpccAll = excelEpccReader.readAll();
+
+        double a=201000.0;
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < listEpccAll.size(); i++) {
+
+
+            String oaUserId = (String) listEpccAll.get(i).get("oaUserId");
+            String unifyId = (String) listEpccAll.get(i).get("unifyId");
+            String userName = (String) listEpccAll.get(i).get("userName");
+            userName = userName.substring(0,userName.indexOf("["));
+            //String sql = ;
+            sb.append("update `optimus_4.0_pevc`.`users` set oa_user_id='"+oaUserId+"',user_id='"+unifyId+"' where name='"+userName+"';\n");
+
+        }
+        System.out.println(sb);
+    }
+
+
+    public static void cyjjAfterUserInfo(){
+
+        ExcelReader userInfoXls = ExcelUtil.getReader(ResourceUtil.getStream("F:\\userInfo.xls"));
+        List<Map<String, Object>> userInfos = userInfoXls.readAll();
+        Map<String,Object> resultMap=new HashMap<>();
+        for (int i = 0; i < userInfos.size(); i++) {
+            Long userId = (Long) userInfos.get(i).get("userId");
+            String userName = (String) userInfos.get(i).get("userName");
+            resultMap.put(userName,userId);
+        }
+
+        // 投后项目负责人
+        // c74ea7a4409fb71634cf5ceca7e3c726
+
+        //投后基金负责人
+        //3f4b706e44e8606858a272cd91d57165
+
+        // 项目成员
+        // 1e5bfba52f5abce311c29bc9f8d021f7
+
+        // 投后部人员
+        //5568f08c0d80703558246324c810665a
+
+        //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("F:\\投后项目管理人员数据补录.xls"));
+        ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("F:\\投后项目管理人员数据补录 -去重数据.xls"));
+        List<Map<String, Object>> afterProjects = afterProjectData.readAll();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < afterProjects.size(); i++) {
+
+            String fzrName = (String)afterProjects.get(i).get("负责人");
+            String projectType = (String)afterProjects.get(i).get("项目类型");
+            Long entityId = (Long)afterProjects.get(i).get("实体ID");
+            String [] fzrNames= fzrName.split("、");
+            for (int j=0;j<fzrNames.length;j++){
+                String name= fzrNames[j];
+                if("此项目暂未进入投后".equals(name)){
+                   // System.out.println("不处理"+name);
+                    continue;
+                }
+                Long userIdNew=(Long) resultMap.get(name);
+                if(projectType.equals("基金项目") || projectType.equals("基金主体")){
+                    //AFTER_FUND
+                    sb.append("INSERT INTO `optimus_4.0_pevc`.`t_b_group_members` (`is_deleted`, `create_by`, `create_time`, `update_by`, `update_time`, `business_id`, `business_type`, `user_id`, `role_id`, `tenant_id`) VALUES ( '0', '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+entityId+"', 'AFTER_FUND', '"+userIdNew+"', '3f4b706e44e8606858a272cd91d57165', NULL);\n");
+
+                }else{
+
+                    sb.append("INSERT INTO `optimus_4.0_pevc`.`t_b_group_members` (`is_deleted`, `create_by`, `create_time`, `update_by`, `update_time`, `business_id`, `business_type`, `user_id`, `role_id`, `tenant_id`) VALUES ( '0', '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+entityId+"', 'AFTER_PROJECT', '"+userIdNew+"', 'c74ea7a4409fb71634cf5ceca7e3c726', NULL);\n");
+
+                }
+            }
+
+            Object xmcyName = (Object) afterProjects.get(i).get("项目成员");
+            if("0".equals(xmcyName.toString())){
+               // System.out.println("项目成员:"+xmcyName);
+                continue;
+            }
+
+            String [] xmcyNames= xmcyName.toString().split("、");
+            for (int j=0;j<xmcyNames.length;j++){
+                String name= xmcyNames[j];
+                if("0".equals(name)){
+                    //System.out.println("---用户为O不处理----");
+                    continue;
+                }
+                Long userIdNew=(Long) resultMap.get(name);
+
+                if(projectType.equals("基金项目") || projectType.equals("基金主体")){
+                    sb.append("INSERT INTO `optimus_4.0_pevc`.`t_b_group_members` (`is_deleted`, `create_by`, `create_time`, `update_by`, `update_time`, `business_id`, `business_type`, `user_id`, `role_id`, `tenant_id`) VALUES ( '0', '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+userIdNew+"',DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+entityId+"', 'AFTER_FUND', '"+userIdNew+"', '1e5bfba52f5abce311c29bc9f8d021f7', NULL);\n");
+
+                }else{
+                    sb.append("INSERT INTO `optimus_4.0_pevc`.`t_b_group_members` (`is_deleted`, `create_by`, `create_time`, `update_by`, `update_time`, `business_id`, `business_type`, `user_id`, `role_id`, `tenant_id`) VALUES ( '0', '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+userIdNew+"',DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+entityId+"', 'AFTER_PROJECT', '"+userIdNew+"', '1e5bfba52f5abce311c29bc9f8d021f7', NULL);\n");
+
+                }
+
+            }
+
+            Object thbName = (Object)afterProjects.get(i).get("投后部人员");
+            if("0".equals(thbName.toString())){
+                //System.out.println("项目成员:"+xmcyName);
+                continue;
+            }
+            String [] thbNames= thbName.toString().split("、");
+            for (int j=0;j<thbNames.length;j++){
+                String name= thbNames[j];
+                if("0".equals(name)){
+                    //System.out.println("---用户为O不处理----");
+                    continue;
+                }
+                Long userIdNew=(Long) resultMap.get(name);
+                if(projectType.equals("基金项目") || projectType.equals("基金主体")){
+                    sb.append("INSERT INTO `optimus_4.0_pevc`.`t_b_group_members` (`is_deleted`, `create_by`, `create_time`, `update_by`, `update_time`, `business_id`, `business_type`, `user_id`, `role_id`, `tenant_id`) VALUES ( '0', '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+entityId+"', 'AFTER_FUND', '"+userIdNew+"', '5568f08c0d80703558246324c810665a', NULL);\n");
+
+                }else{
+                    sb.append("INSERT INTO `optimus_4.0_pevc`.`t_b_group_members` (`is_deleted`, `create_by`, `create_time`, `update_by`, `update_time`, `business_id`, `business_type`, `user_id`, `role_id`, `tenant_id`) VALUES ( '0', '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+userIdNew+"', DATE_ADD(SYSDATE(), INTERVAL 8 HOUR), '"+entityId+"', 'AFTER_PROJECT', '"+userIdNew+"', '5568f08c0d80703558246324c810665a', NULL);\n");
+
+                }
+
+            }
+        }
+        System.out.println(sb);
+
+    }
+
+    public static void cyjjUserInfoEncryytor() {
+        try {
+            String str=null;
+            List<String> nationalIndustryCode = JSON.parseArray(str, String.class);
+            ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2023年线上发布\\2023-09-06上线准备\\员工档案信息 - 副本.xls"));
+            List<Map<String, Object>> afterProjects = afterProjectData.readAll();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < afterProjects.size(); i++) {
+
+                String name = (String) afterProjects.get(i).get("姓名");
+                String idCard = (String) afterProjects.get(i).get("身份证号码");
+                if(name!=null && idCard!=null) {
+                    String enstr = EncryptorSecuriyUtil.senstiveEncrypt(idCard);
+                    sb.append("update `optimus_4.0_pevc`.`users` set id_card='" + enstr + "' where   name='" + name + "';\n");
+                }
+            }
+            System.out.println(sb);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
