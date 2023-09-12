@@ -5,6 +5,7 @@ import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.alibaba.fastjson.JSON;
 import com.linzhi.datasource.app.utils.EncryptorSecuriyUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -65,12 +66,24 @@ public class AddPartitionTest {
 
        //cyjjAfterUserInfo();
 
-       cyjjUserInfoEncryytor();
+       //cyjjUserInfoEncryytor();
+
+        //cyjjUserInfoOAInfo();
 
    /*     String s="f-0808879f090f";
 
        System.out.println( "---"+s.startsWith("f"));
         System.out.println(s.substring(1,s.length()));*/
+
+
+        String str = "432503198804096";
+        //replaceAll(A,B) 是用B去替代A的内容
+        //正则表达式的使用：后面会说到
+        if(StringUtils.isNotEmpty(str) && str.length()>=16) {
+            String str_2 = str.replaceAll("(?<=[\\w]{6})\\w(?=[\\w]{4})", "*");
+            System.out.println("请核对你的信息:" + str_2);
+        }
+
 
 
     }
@@ -685,6 +698,9 @@ public class AddPartitionTest {
         try {
             String str=null;
             List<String> nationalIndustryCode = JSON.parseArray(str, String.class);
+            if (nationalIndustryCode.size() >= 2) {
+                System.out.println("11111111111");
+            }
             ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2023年线上发布\\2023-09-06上线准备\\员工档案信息 - 副本.xls"));
             List<Map<String, Object>> afterProjects = afterProjectData.readAll();
             StringBuffer sb = new StringBuffer();
@@ -695,6 +711,35 @@ public class AddPartitionTest {
                 if(name!=null && idCard!=null) {
                     String enstr = EncryptorSecuriyUtil.senstiveEncrypt(idCard);
                     sb.append("update `optimus_4.0_pevc`.`users` set id_card='" + enstr + "' where   name='" + name + "';\n");
+                }
+            }
+            System.out.println(sb);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    public static void cyjjUserInfoOAInfo() {
+        try {
+
+            ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("D:\\外部委员数据_集团用户.xls"));
+            List<Map<String, Object>> afterProjects = afterProjectData.readAll();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < afterProjects.size(); i++) {
+
+                String name = (String) afterProjects.get(i).get("外部委员姓名");
+                String account = (String) afterProjects.get(i).get("外部委员账号");
+                String oaId= (String) afterProjects.get(i).get("OAid");
+                String oaUserID= (String) afterProjects.get(i).get("OA_USER_ID");
+                String EMPLOYEE_NO= (String) afterProjects.get(i).get("EMPLOYEE_NO");
+                if(name!=null && account!=null) {
+
+                    sb.append("update `optimus_4.0_pevc`.`users` set user_id='" + account + "', oa_user_id='" + oaUserID + "' where   name='" + name + "';\n");
+
+                    //sb.append("update `optimus_4.0_security`.user set OAID='" + oaId + "',EMPLOYEE_NO='" + EMPLOYEE_NO +"' where   fullname='" + name + "';\n");
                 }
             }
             System.out.println(sb);
