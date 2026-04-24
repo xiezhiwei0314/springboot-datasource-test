@@ -8,6 +8,9 @@ import com.linzhi.datasource.app.utils.EncryptorSecuriyUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -33,6 +36,25 @@ public class AddPartitionTest {
         LocalDate localDate = LocalDate.now();
         LocalDate start = localDate.withDayOfMonth(1);
         LocalDate end = localDate.plusMonths(6);
+        String  holdingNum="1.9亿";
+        if (holdingNum.contains("亿")) {
+            System.out.println("aa="+holdingNum.split("亿")[0]);
+           Double amount= Double.valueOf(holdingNum.split("亿")[0]) * 100000000;
+            System.out.println("amount:"+amount);
+        }
+
+       // BigDecimal number = new BigDecimal("3.1459"); // 要处理的数字
+        BigDecimal number = new BigDecimal("0.39898989");
+
+        NumberFormat format = NumberFormat.getInstance();
+        format.setMaximumFractionDigits(2); // 设置最大小数位数为2
+        String result = format.format(number); // 格式化输出结果
+
+        System.out.println("result="+result); // 打印结果
+
+        BigDecimal number1 = new BigDecimal("0.39898989");
+        BigDecimal rounded = number1.setScale(4, RoundingMode.HALF_UP); // 四舍五入到1位小数
+        System.out.println("rounded="+rounded); // 输出 0.39
 
         //generateSQL(start, end);
 
@@ -66,8 +88,21 @@ public class AddPartitionTest {
 
        //cyjjAfterUserInfo();
 
-       //cyjjUserInfoEncryytor();
+       cyjjUserInfoEncryytor();
 
+       // hnInvestDataInit();
+
+        //cyjjInvestInfo();
+
+        //cyjjInvestGeRenInfo();
+        System.out.println(getMobileShort("3650211"));
+        System.out.println("idNo="+getPayerIdNoShort("3088 2516 0443"));
+        System.out.println(EncryptorSecuriyUtil.senstiveDecrypt("808D00940401162EECC2FBBE644DD63A"));
+
+        //cyjjInvestorContactsInfo();
+        /*System.out.println("TTT="+EncryptorSecuriyUtil.senstiveDecrypt("7A850178E72EA2800EA3A7DEC88034088A984C531E3E6D0F92B3C6B0D5EDC6FF"));
+        System.out.println("BBB="+EncryptorSecuriyUtil.senstiveDecrypt("B60B5BBC4DC7AFE9EDE55E10195A45A161E200AF5EFD0D9207E0E670080F261F"));
+        System.out.println("QQQ="+EncryptorSecuriyUtil.senstiveDecrypt("1846D576141698E8CD6E34E37C832F35"));*/
         //cyjjUserInfoOAInfo();
 
    /*     String s="f-0808879f090f";
@@ -76,16 +111,59 @@ public class AddPartitionTest {
         System.out.println(s.substring(1,s.length()));*/
 
 
-        String str = "432503198804096";
+       /* String str = "432503198804096";
         //replaceAll(A,B) 是用B去替代A的内容
         //正则表达式的使用：后面会说到
         if(StringUtils.isNotEmpty(str) && str.length()>=16) {
             String str_2 = str.replaceAll("(?<=[\\w]{6})\\w(?=[\\w]{4})", "*");
             System.out.println("请核对你的信息:" + str_2);
+        }*/
+
+       double aa=33.35478973388672+22.623924255371094+13.247658729553223+98.69696044921875;
+        System.out.println("aa="+aa);
+        System.out.println("aa="+aa/4);
+        List<Double> comparableDatas = new ArrayList<>();
+        comparableDatas.add(33.35478973388672);
+        comparableDatas.add(22.623924255371094);
+        comparableDatas.add(13.247658729553223);
+        comparableDatas.add(98.69696044921875);
+
+        BigDecimal multiplierValue = new BigDecimal(0);
+        List<Double> comparableDatasFilterAverage = comparableDatas.stream().filter(it -> it != null).collect(Collectors.toList());
+        comparableDatas.stream().forEach(it -> {
+
+        });
+
+        multiplierValue = multiplierValue.divide(new BigDecimal(comparableDatasFilterAverage.size()),2);
+        System.out.println("multiplierValue="+multiplierValue);
+
+        /*85.3314
+        14.3742
+        26.511
+        -26.0283*/
+    }
+    /**
+     * 获取手机号（前3后4）
+     *
+     * @param mobile
+     * @return
+     */
+    private static String getMobileShort(String mobile) {
+        if(mobile==null || mobile.length()<11){
+            //return mobile.substring(0, 2) + "*******" + mobile.substring(4, 6);
+            return "**********" ;
         }
+        return mobile.substring(0, 2) + "*******" + mobile.substring(9, 11);
+    }
 
-
-
+    /**
+     * 获取身份证（前6后四）
+     *
+     * @param payerIdNo
+     * @return
+     */
+    private static String getPayerIdNoShort(String payerIdNo) {
+        return payerIdNo.replaceAll("(?<=\\w{4})\\w(?=\\w{2})", "*");
     }
 
     private static void generateSQL(LocalDate startDate, LocalDate endDate) {
@@ -696,12 +774,18 @@ public class AddPartitionTest {
 
     public static void cyjjUserInfoEncryytor() {
         try {
-            String str=null;
+  /*          String str=null;
             List<String> nationalIndustryCode = JSON.parseArray(str, String.class);
             if (nationalIndustryCode.size() >= 2) {
                 System.out.println("11111111111");
-            }
-            ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2023年线上发布\\2023-09-06上线准备\\员工档案信息 - 副本.xls"));
+            }*/
+            //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2023年线上发布\\2023-09-06上线准备\\员工档案信息 - 副本.xls"));
+            //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2023年线上发布\\2023-10-09上线准备\\【员工身份证号】【集团管培生等】(2) - 副本.xlsx"));
+            //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\产基员工信息\\2023年11月14日\\产基用户身份证为空 - 副本.xls"));
+            ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\产基员工信息\\2026年4月23日\\产基用户身份证为空 - 副本.xls"));
+
+
+
             List<Map<String, Object>> afterProjects = afterProjectData.readAll();
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < afterProjects.size(); i++) {
@@ -748,4 +832,181 @@ public class AddPartitionTest {
         }
 
     }
+
+    public static void hnInvestDataInit(){
+
+        try {
+
+            //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年开发设计\\第一季度\\2024年1月\\湖南投资数据.xlsx"));
+            //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年01月30日\\投资湖南驾驶舱数据2024-1-30导入.xlsx"));
+            //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年01月30日\\投资湖南驾驶舱数据2024-2-2导入.xlsx"));
+            ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年01月30日\\投资湖南驾驶舱数据-20240219.xlsx"));
+
+
+            List<Map<String, Object>> afterProjects = afterProjectData.readAll();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < afterProjects.size(); i++) {
+
+                Object stateDate = (Object) afterProjects.get(i).get("报表日期");
+                String investMain = (String) afterProjects.get(i).get("投资主体");
+                String bigClass = (String) afterProjects.get(i).get("大类");
+                String investClass = (String) afterProjects.get(i).get("投资分类");
+                String projectName = (String) afterProjects.get(i).get("项目名称");
+                Object investDate = (Object) afterProjects.get(i).get("投资时间");
+                Object investAmount = (Object) afterProjects.get(i).get("投资金额/返投金额");
+                if(investAmount==null || investAmount.equals("-")){
+
+                    investAmount=0;
+                }
+
+                String stage = (String) afterProjects.get(i).get("投资阶段");
+                String chanyetixi = (String) afterProjects.get(i).get("所属4×4现代化产业体系");
+                String investLy = (String) afterProjects.get(i).get("投资领域");
+                String addres = (String) afterProjects.get(i).get("注册地址");
+                String number = "0";
+                String businessType = (String) afterProjects.get(i).get("业务类型");
+                String city = (String) afterProjects.get(i).get("落地市州");
+
+                sb.append("INSERT INTO `optimus_4.0_pevc`.`t_stat_hn_invest` (`stat_date`, `invest_main`, `invest_large_category`, `invest_classify`, `project_name`, `invest_time`, `invest_amount`, `invest_stage`, `modernize_industry_structure`, `invest_domain`, `register_address`, `project_num`, `business_type`, `landing_address`, `remark`, `is_deleted`) VALUES ( '"+stateDate+"', '"+investMain+"', '"+bigClass+"', '"+investClass+"', '"+projectName+"', '"+investDate+"', '"+investAmount+"', '"+stage+"', '"+chanyetixi+"', '"+investLy+"', '"+addres+"', '"+number+"', '"+businessType+"', '"+city+"', '备注', '0');\n");
+            }
+            System.out.println(sb);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static void cyjjInvestInfo() {
+        try {
+
+            //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年04月25日\\产品机构信息 - 测试.xlsx"));
+            ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年04月25日\\机构信息 - 测试.xls"));
+            List<Map<String, Object>> afterProjects = afterProjectData.readAll();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < afterProjects.size(); i++) {
+
+                String id = (String) afterProjects.get(i).get("主键");
+                String legal_Card_Code_enc = (String) afterProjects.get(i).get("法定代表人身份证件号码");
+                String authorizer_Card_Code_enc= (String) afterProjects.get(i).get("授权代表人身份证件号码");
+                String phone= (String) afterProjects.get(i).get("授权代表人手机号码");
+
+                String biaoji1=getPayerIdNoShort(legal_Card_Code_enc);
+                String biaoji2=getPayerIdNoShort(authorizer_Card_Code_enc);
+                String biaoji3 = phone;
+                if(phone!=null && !phone.equals("-")) {
+                     biaoji3 = getMobileShort(phone);
+                }
+
+
+                        legal_Card_Code_enc = EncryptorSecuriyUtil.senstiveEncrypt(legal_Card_Code_enc);
+                authorizer_Card_Code_enc = EncryptorSecuriyUtil.senstiveEncrypt(authorizer_Card_Code_enc);
+                phone = EncryptorSecuriyUtil.senstiveEncrypt(phone);
+
+                sb.append("update `optimus_pevc`.`i_investor_mechanism` set legal_Card_Code='" + biaoji1 + "', authorizer_Card_Code='" + biaoji2 + "' , authorizer_Telephone='" + biaoji3 + "', legal_Card_Code_enc='" + legal_Card_Code_enc + "', authorizer_Card_Code_enc='" + authorizer_Card_Code_enc + "' , authorizer_Telephone_enc='" + phone + "' where   id='" + id + "';\n");
+
+                 //sb.append("update `optimus_pevc`.`i_investor_product` set legal_Card_Code='" + biaoji1 + "', authorizer_Card_Code='" + biaoji2 + "' , authorizer_Telephone='" + biaoji3 + "', legal_Card_Code_enc='" + legal_Card_Code_enc + "', authorizer_Card_Code_enc='" + authorizer_Card_Code_enc + "' , authorizer_Telephone_enc='" + phone + "' where   id='" + id + "';\n");
+
+            }
+            System.out.println(sb);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void cyjjInvestGeRenInfo() {
+        try {
+            //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年04月25日\\个人信息.xlsx"));
+            ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年04月25日\\个人信息 - 测试.xlsx"));
+
+            List<Map<String, Object>> afterProjects = afterProjectData.readAll();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < afterProjects.size(); i++) {
+
+                String id = (String) afterProjects.get(i).get("主键");
+                String legal_Card_Code_enc = (String) afterProjects.get(i).get("证件号码");
+                String telephone_enc = (String) afterProjects.get(i).get("手机号码");
+
+
+                String biaoji=getPayerIdNoShort(legal_Card_Code_enc);
+                legal_Card_Code_enc = EncryptorSecuriyUtil.senstiveEncrypt(legal_Card_Code_enc);
+
+                String biaoji2="";
+                if(telephone_enc!=null) {
+                    biaoji2=getMobileShort(telephone_enc);
+                    telephone_enc = EncryptorSecuriyUtil.senstiveEncrypt(telephone_enc);
+
+                }
+
+               // sb.append("update `optimus_pevc`.`i_investor_personal` set certificate_no='" + biaoji + "', certificate_no_enc='" + legal_Card_Code_enc + "',telephone='" + biaoji2 + "', telephone_enc='" + telephone_enc + "' where   id='" + id + "';\n");
+
+                sb.append("update `optimus_pevc`.`i_investor_personal` set telephone='" + biaoji2 + "', telephone_enc='" + telephone_enc + "' where   id='" + id + "';\n");
+
+
+            }
+            System.out.println(sb);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void cyjjInvestorContactsInfo() {
+        try {
+           // ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年04月25日\\联系人- 测试.xlsx"));
+            //ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年04月25日\\联系人.xlsx"));
+            ExcelReader afterProjectData = ExcelUtil.getReader(ResourceUtil.getStream("E:\\财信数科\\2024年线上发布\\2024年04月25日\\导入联系模板.xlsx"));
+
+
+
+            List<Map<String, Object>> afterProjects = afterProjectData.readAll();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < afterProjects.size(); i++) {
+
+                Long id = (Long)afterProjects.get(i).get("实体ID");
+                Object name =  afterProjects.get(i).get("联系人名称");
+                Object zhiwei =  afterProjects.get(i).get("职位");
+                Object phone =  afterProjects.get(i).get("联系人电话");
+
+                String nameStr ="";
+                if(name!=null){
+                    nameStr=name.toString();
+                    nameStr=nameStr.trim();
+                    if(nameStr.equals("/") || nameStr.equals("\\") || nameStr.equals("")){
+                        nameStr=null;
+                    }
+                }
+
+                String newStrphone="";
+                if(phone!=null){
+                    newStrphone=phone.toString();
+                    newStrphone=newStrphone.trim();
+                    if(newStrphone.equals("/") || newStrphone.equals("\\") || newStrphone.equals("")){
+                        newStrphone=null;
+                    }
+                }
+                String zhiweiStr="";
+                if(zhiwei!=null){
+                    zhiweiStr=zhiwei.toString();
+                    if(zhiweiStr.equals("/") || zhiweiStr.equals("\\") || zhiweiStr.equals("")){
+                        zhiweiStr=null;
+                    }
+                }
+
+                if((nameStr==null || nameStr.equals(" ")) && (zhiweiStr==null || zhiweiStr.equals(" ")) && (newStrphone==null || newStrphone.equals(" "))){
+
+
+                    continue;
+                }
+
+             sb.append("INSERT INTO `optimus_pevc`.`project_personnel`(`business_id`, `stage_id`, `management_level`, `name`, `position`, `email`, `tel`, `remark`, `create_time`, `create_by`, `business_type`, `shareholding_amount`, `other`, `tenant_id`, `address`) VALUES ("+id+", NULL, NULL, '"+name+"', '"+zhiweiStr+"', NULL, '"+newStrphone+"', NULL, NULL, '100866', 'ENTITY', NULL, NULL, NULL, NULL);\n");
+
+            }
+            System.out.println(sb);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
 }
